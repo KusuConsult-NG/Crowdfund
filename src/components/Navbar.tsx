@@ -9,7 +9,6 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
     const navigate = useNavigate();
     const { user, isAdmin, isSuperAdmin, isDonor, logout } = useAuth();
-    const [showDropdown, setShowDropdown] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -70,20 +69,23 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                 )}
 
                 {user ? (
-                    <div style={{ position: 'relative' }}>
-                        <div
-                            onClick={() => setShowDropdown(!showDropdown)}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.75rem',
-                                cursor: 'pointer',
-                                padding: '0.5rem 1rem',
-                                borderRadius: 'var(--radius-lg)',
-                                transition: 'background-color 0.2s',
-                                backgroundColor: showDropdown ? 'var(--color-bg-light)' : 'transparent'
-                            }}
-                        >
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        {/* Dashboard Button */}
+                        <Link to={isSuperAdmin() ? '/superadmin/dashboard' : isAdmin() ? '/admin/dashboard' : '/user/dashboard'}>
+                            <button className="btn btn-secondary">
+                                Dashboard
+                            </button>
+                        </Link>
+
+                        {/* User Avatar and Name */}
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            padding: '0.5rem 1rem',
+                            borderRadius: 'var(--radius-lg)',
+                            backgroundColor: 'var(--color-bg-light)'
+                        }}>
                             <div style={{
                                 width: '2.5rem',
                                 height: '2.5rem',
@@ -103,51 +105,17 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                             </p>
                         </div>
 
-                        {showDropdown && (
-                            <div style={{
-                                position: 'absolute',
-                                top: '100%',
-                                right: 0,
-                                marginTop: '0.5rem',
-                                backgroundColor: 'white',
-                                border: '1px solid var(--color-border)',
-                                borderRadius: 'var(--radius-lg)',
-                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                                minWidth: '200px',
-                                zIndex: 1000
-                            }}>
-                                <Link
-                                    to={isSuperAdmin() ? '/superadmin/dashboard' : isAdmin() ? '/admin/dashboard' : '/user/dashboard'}
-                                    onClick={() => setShowDropdown(false)}
-                                    style={{
-                                        display: 'block',
-                                        padding: '0.75rem 1rem',
-                                        color: 'var(--color-text-primary)',
-                                        textDecoration: 'none',
-                                        fontSize: '0.875rem',
-                                        borderBottom: '1px solid var(--color-border)'
-                                    }}
-                                >
-                                    Dashboard
-                                </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem 1rem',
-                                        border: 'none',
-                                        background: 'none',
-                                        color: 'var(--color-error)',
-                                        textAlign: 'left',
-                                        fontSize: '0.875rem',
-                                        cursor: 'pointer',
-                                        fontWeight: '500'
-                                    }}
-                                >
-                                    Logout
-                                </button>
-                            </div>
-                        )}
+                        {/* Logout Button */}
+                        <button
+                            onClick={handleLogout}
+                            className="btn btn-secondary"
+                            style={{
+                                color: 'var(--color-error)',
+                                borderColor: 'var(--color-error)'
+                            }}
+                        >
+                            Logout
+                        </button>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', gap: '1rem' }}>
