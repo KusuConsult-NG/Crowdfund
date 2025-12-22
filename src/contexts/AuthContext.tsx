@@ -59,12 +59,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Check auth status when the app first loads
     useEffect(() => {
-        checkAuth();
+        // Check if this is a new browser session
+        const isNewSession = !sessionStorage.getItem('appSessionActive');
+
+        if (isNewSession) {
+            // This is a new browser session - logout any existing Appwrite session
+            authService.logout().catch(() => {
+                // Ignore errors if no session exists
+            }).finally(() => {
+                // Mark this browser session as active
+                sessionStorage.setItem('appSessionActive', 'true');
+                // Now check auth (will be null since we just logged out)
+                checkAuth();
+            });
+        } else {
+            // Continuing same browser session - check existing auth
+            checkAuth();
+        }
+
+        // Clear the session flag when window is closed
+        const handleBeforeUnload = () => {
+            sessionStorage.removeItem('appSessionActive');
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
     }, []);
 
     const signup = async (email: string, password: string, name: string, role: 'Donor' | 'Organizer' = 'Donor', adminRole?: AdminRole) => {
         try {
             await authService.signup(email, password, name, role, adminRole);
+            // Mark session as active after successful signup
+            sessionStorage.setItem('appSessionActive', 'true');
             await checkAuth();
         } catch (error: any) {
             throw error;
@@ -74,6 +103,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const login = async (email: string, password: string) => {
         try {
             await authService.login(email, password);
+            // Mark session as active after successful login
+            sessionStorage.setItem('appSessionActive', 'true');
             await checkAuth();
         } catch (error: any) {
             throw error;
@@ -83,6 +114,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const logout = async () => {
         try {
             await authService.logout();
+            // Clear the session flag on manual logout
+            sessionStorage.removeItem('appSessionActive');
             setUser(null);
             setUserProfile(null);
         } catch (error: any) {
