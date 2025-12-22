@@ -8,7 +8,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
     const navigate = useNavigate();
-    const { user, isAdmin, isSuperAdmin, logout } = useAuth();
+    const { user, isAdmin, isSuperAdmin, isDonor, logout } = useAuth();
     const [showDropdown, setShowDropdown] = useState(false);
 
     const handleLogout = async () => {
@@ -28,6 +28,8 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
         if (!user) return '/';
         if (isSuperAdmin()) return '/superadmin/dashboard';
         if (isAdmin()) return '/admin/dashboard';
+        // Donors should see the project discovery page
+        if (isDonor()) return '/discover';
         return '/user/dashboard';
     };
 
