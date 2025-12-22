@@ -8,7 +8,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
+    const { user, isAdmin, isSuperAdmin, logout } = useAuth();
     const [showDropdown, setShowDropdown] = useState(false);
 
     const handleLogout = async () => {
@@ -18,6 +18,17 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
         } catch (error) {
             console.error('Logout failed:', error);
         }
+    };
+
+    // Show Create Project button only for admins and super admins
+    const canCreateProject = (isAdmin() || isSuperAdmin()) && showCreateButton;
+
+    // Determine the home route based on user authentication and role
+    const getHomeRoute = () => {
+        if (!user) return '/';
+        if (isSuperAdmin()) return '/superadmin/dashboard';
+        if (isAdmin()) return '/admin/dashboard';
+        return '/user/dashboard';
     };
 
     return (
@@ -34,7 +45,7 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
             backgroundColor: 'var(--color-bg-white)',
             zIndex: 1000
         }}>
-            <Link to="/" style={{ textDecoration: 'none' }}>
+            <Link to={getHomeRoute()} style={{ textDecoration: 'none' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ width: '1.5rem', height: '1.5rem' }}>
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
             </Link>
 
             <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                {showCreateButton && (
+                {canCreateProject && (
                     <Link to="/create-project">
                         <button className="btn btn-primary" style={{ minWidth: '160px' }}>
                             + Create New Project
@@ -109,7 +120,7 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                                 zIndex: 1000
                             }}>
                                 <Link
-                                    to="/user/dashboard"
+                                    to={isSuperAdmin() ? '/superadmin/dashboard' : isAdmin() ? '/admin/dashboard' : '/user/dashboard'}
                                     onClick={() => setShowDropdown(false)}
                                     style={{
                                         display: 'block',

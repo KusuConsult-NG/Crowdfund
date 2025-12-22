@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
+import { AdminRole } from '../types';
 
-const DonorSignup: React.FC = () => {
+const AdminSignup: React.FC = () => {
     const navigate = useNavigate();
     const { signup } = useAuth();
     const [fullName, setFullName] = useState('');
@@ -12,16 +13,28 @@ const DonorSignup: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [adminRole, setAdminRole] = useState<AdminRole | ''>('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const adminRoles: AdminRole[] = [
+        'Director',
+        'General Secretary',
+        'DCC Secretary',
+        'LCC Secretary',
+        'LC Secretary',
+        'Agency Secretary',
+        'Group Secretary',
+        'Committee Secretary'
+    ];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
         // Validation
-        if (!fullName || !email || !password || !confirmPassword) {
-            setError('Please fill in all fields');
+        if (!fullName || !email || !password || !confirmPassword || !adminRole) {
+            setError('Please fill in all fields including your role');
             return;
         }
 
@@ -38,9 +51,9 @@ const DonorSignup: React.FC = () => {
         setLoading(true);
 
         try {
-            await signup(email, password, fullName);
-            // Redirect to project discovery after successful signup so donors can browse projects
-            navigate('/discover');
+            await signup(email, password, fullName, 'Organizer', adminRole as AdminRole);
+            // Redirect to admin dashboard after successful signup
+            navigate('/admin/dashboard');
         } catch (err: any) {
             setError(err.message || 'Failed to create account');
         } finally {
@@ -62,7 +75,7 @@ const DonorSignup: React.FC = () => {
                         textAlign: 'center',
                         color: 'var(--color-text-primary)'
                     }}>
-                        Create Your Donor Account
+                        Create Your Admin Account
                     </h2>
 
                     <p style={{
@@ -71,7 +84,7 @@ const DonorSignup: React.FC = () => {
                         textAlign: 'center',
                         color: 'var(--color-text-primary)'
                     }}>
-                        Join ChurchFlow to support meaningful church projects and make a difference in your community.
+                        Join ChurchFlow to create and manage church projects, track donations, and engage your community.
                     </p>
 
                     {error && (
@@ -113,11 +126,32 @@ const DonorSignup: React.FC = () => {
                                 </p>
                                 <input
                                     type="email"
-                                    placeholder="you@example.com"
+                                    placeholder="you@church.org"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     disabled={loading}
                                 />
+                            </label>
+                        </div>
+
+                        <div style={{ maxWidth: '480px', padding: '0.75rem 1rem' }}>
+                            <label>
+                                <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
+                                    Your Role
+                                </p>
+                                <select
+                                    value={adminRole}
+                                    onChange={(e) => setAdminRole(e.target.value as AdminRole)}
+                                    disabled={loading}
+                                    style={{ width: '100%' }}
+                                >
+                                    <option value="">Select your role...</option>
+                                    {adminRoles.map((role) => (
+                                        <option key={role} value={role}>
+                                            {role}
+                                        </option>
+                                    ))}
+                                </select>
                             </label>
                         </div>
 
@@ -242,10 +276,22 @@ const DonorSignup: React.FC = () => {
                             Sign In
                         </Link>
                     </p>
+
+                    <p style={{
+                        fontSize: '0.875rem',
+                        color: 'var(--color-text-secondary)',
+                        padding: '0.25rem 1rem 0.75rem',
+                        textAlign: 'center'
+                    }}>
+                        Are you a donor?{' '}
+                        <Link to="/signup/donor" style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
+                            Sign Up as Donor
+                        </Link>
+                    </p>
                 </div>
             </main>
         </div>
     );
 };
 
-export default DonorSignup;
+export default AdminSignup;

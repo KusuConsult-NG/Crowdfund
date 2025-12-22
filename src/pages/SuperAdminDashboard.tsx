@@ -113,9 +113,9 @@ const SuperAdminDashboard: React.FC = () => {
                             <div className="card" style={{ padding: '1.5rem' }}>
                                 <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', fontWeight: '500' }}>Total Funds Raised</p>
                                 <p style={{ fontSize: '1.875rem', fontWeight: '700', margin: '0.5rem 0', color: 'var(--color-primary)' }}>
-                                    ${stats.totalFundsRaised.toLocaleString()}
+                                    ₦{stats.totalFundsRaised.toLocaleString()}
                                 </p>
-                                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>Avg. ${(stats.totalFundsRaised / (stats.totalProjects || 1)).toFixed(0)} / project</p>
+                                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>Avg. ₦{(stats.totalFundsRaised / (stats.totalProjects || 1)).toFixed(0)} / project</p>
                             </div>
                             <div className="card" style={{ padding: '1.5rem' }}>
                                 <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', fontWeight: '500' }}>Total users</p>
@@ -127,7 +127,7 @@ const SuperAdminDashboard: React.FC = () => {
                                 <p style={{ fontSize: '1.125rem', fontWeight: '700', margin: '0.5rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                     {stats.topProject.name}
                                 </p>
-                                <p style={{ fontSize: '0.75rem', color: 'var(--color-primary)', fontWeight: '600' }}>${stats.topProject.raised.toLocaleString()} raised</p>
+                                <p style={{ fontSize: '0.75rem', color: 'var(--color-primary)', fontWeight: '600' }}>₦{stats.topProject.raised.toLocaleString()} raised</p>
                             </div>
                         </div>
 
@@ -175,7 +175,7 @@ const SuperAdminDashboard: React.FC = () => {
                                                                 <span style={{ fontSize: '0.75rem', fontWeight: '600' }}>{percentage}%</span>
                                                             </div>
                                                             <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>
-                                                                ${project.raised.toLocaleString()} / ${project.fundingGoal.toLocaleString()}
+                                                                ₦{project.raised.toLocaleString()} / ₦{project.fundingGoal.toLocaleString()}
                                                             </p>
                                                         </td>
                                                         <td>

@@ -1,9 +1,41 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { authService } from '../services/authService';
 import Navbar from '../components/Navbar';
 
 const ForgotPassword: React.FC = () => {
-    const [emailOrPhone, setEmailOrPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setSuccess(false);
+
+        // Validate email
+        if (!email) {
+            setError('Please enter your email address');
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError('Please enter a valid email address');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            await authService.sendPasswordRecovery(email);
+            setSuccess(true);
+        } catch (err: any) {
+            setError(err.message || 'Failed to send password recovery email');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg-white)' }}>
@@ -21,31 +53,93 @@ const ForgotPassword: React.FC = () => {
                         Forgot Password
                     </h2>
 
-                    <p style={{
-                        fontSize: '1rem',
-                        padding: '0.25rem 1rem 0.75rem',
-                        textAlign: 'center',
-                        color: 'var(--color-text-primary)'
-                    }}>
-                        Enter your registered email address or phone number to receive a password reset link or code.
-                    </p>
+                    {!success ? (
+                        <>
+                            <p style={{
+                                fontSize: '1rem',
+                                padding: '0.25rem 1rem 0.75rem',
+                                textAlign: 'center',
+                                color: 'var(--color-text-primary)'
+                            }}>
+                                Enter your registered email address to receive a password reset link.
+                            </p>
 
-                    <div style={{ maxWidth: '480px', padding: '0.75rem 1rem' }}>
-                        <label style={{ display: 'flex', flexDirection: 'column', minWidth: '10rem', flex: 1 }}>
-                            <input
-                                type="text"
-                                placeholder="Email or Phone"
-                                value={emailOrPhone}
-                                onChange={(e) => setEmailOrPhone(e.target.value)}
-                            />
-                        </label>
-                    </div>
+                            {error && (
+                                <div style={{
+                                    padding: '0.75rem 1rem',
+                                    marginBottom: '0.5rem',
+                                    backgroundColor: '#FEE2E2',
+                                    border: '1px solid var(--color-error)',
+                                    borderRadius: 'var(--radius-lg)',
+                                    color: 'var(--color-error)',
+                                    fontSize: '0.875rem',
+                                    maxWidth: '480px',
+                                    margin: '0 auto 0.5rem'
+                                }}>
+                                    {error}
+                                </div>
+                            )}
 
-                    <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'center' }}>
-                        <button className="btn btn-primary">
-                            Submit
-                        </button>
-                    </div>
+                            <form onSubmit={handleSubmit}>
+                                <div style={{ maxWidth: '480px', padding: '0.75rem 1rem' }}>
+                                    <label style={{ display: 'flex', flexDirection: 'column', minWidth: '10rem', flex: 1 }}>
+                                        <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
+                                            Email Address
+                                        </p>
+                                        <input
+                                            type="email"
+                                            placeholder="you@example.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            disabled={loading}
+                                        />
+                                    </label>
+                                </div>
+
+                                <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'center' }}>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                        style={{ width: '100%', maxWidth: '480px' }}
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Sending...' : 'Send Reset Link'}
+                                    </button>
+                                </div>
+                            </form>
+                        </>
+                    ) : (
+                        <div style={{
+                            padding: '1.5rem 1rem',
+                            textAlign: 'center'
+                        }}>
+                            <div style={{
+                                padding: '0.75rem 1rem',
+                                marginBottom: '1rem',
+                                backgroundColor: '#D1FAE5',
+                                border: '1px solid #10B981',
+                                borderRadius: 'var(--radius-lg)',
+                                color: '#065F46',
+                                fontSize: '0.875rem',
+                                maxWidth: '480px',
+                                margin: '0 auto 1rem'
+                            }}>
+                                <strong>Email Sent Successfully!</strong>
+                                <p style={{ marginTop: '0.5rem' }}>
+                                    We've sent a password reset link to <strong>{email}</strong>.
+                                    Please check your inbox and follow the instructions to reset your password.
+                                </p>
+                            </div>
+
+                            <p style={{
+                                fontSize: '0.875rem',
+                                color: 'var(--color-text-secondary)',
+                                marginTop: '1rem'
+                            }}>
+                                Didn't receive the email? Check your spam folder or try again.
+                            </p>
+                        </div>
+                    )}
 
                     <p style={{
                         fontSize: '0.875rem',
@@ -53,7 +147,7 @@ const ForgotPassword: React.FC = () => {
                         padding: '0.25rem 1rem 0.75rem',
                         textAlign: 'center'
                     }}>
-                        <Link to="/admin/dashboard" style={{ textDecoration: 'underline' }}>
+                        <Link to="/login" style={{ textDecoration: 'underline' }}>
                             Remember your password? Go back to Login
                         </Link>
                     </p>

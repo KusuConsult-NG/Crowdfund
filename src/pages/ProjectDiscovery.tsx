@@ -12,6 +12,8 @@ const ProjectDiscovery: React.FC = () => {
     const [projects, setProjects] = useState<(Project & { $id: string })[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const projectsPerPage = 8;
 
     // Debounce search
     useEffect(() => {
@@ -20,6 +22,11 @@ const ProjectDiscovery: React.FC = () => {
         }, 500);
         return () => clearTimeout(handler);
     }, [searchTerm]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [categoryFilter, debouncedSearch, sortBy]);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -50,7 +57,7 @@ const ProjectDiscovery: React.FC = () => {
             <Navbar />
 
             {/* Main Content */}
-            <main style={{ padding: '2rem 10rem' }}>
+            <main style={{ padding: '6rem 10rem 2rem' }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', padding: '1rem 0' }}>
                         <p style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--color-text-primary)', minWidth: '18rem' }}>
@@ -143,92 +150,141 @@ const ProjectDiscovery: React.FC = () => {
                             <p style={{ color: 'var(--color-text-secondary)' }}>No projects found matching your criteria.</p>
                         </div>
                     ) : (
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                            gap: '1.5rem',
-                            padding: '1rem 0'
-                        }}>
-                            {projects.map((project: Project & { $id: string }) => {
-                                const percentage = Math.round((project.raised / project.fundingGoal) * 100);
-                                const daysLeft = calculateDaysLeft(project.endDate);
+                        <>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                                gap: '1.5rem',
+                                padding: '1rem 0'
+                            }}>
+                                {projects
+                                    .slice((currentPage - 1) * projectsPerPage, currentPage * projectsPerPage)
+                                    .map((project: Project & { $id: string }) => {
+                                        const percentage = Math.round((project.raised / project.fundingGoal) * 100);
+                                        const daysLeft = calculateDaysLeft(project.endDate);
 
-                                return (
-                                    <Link to={`/project/${project.$id}`} key={project.$id} style={{ textDecoration: 'none' }}>
-                                        <div className="card project-card" style={{
-                                            padding: 0,
-                                            overflow: 'hidden',
-                                            cursor: 'pointer',
-                                            transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                                        }}>
-                                            <div style={{
-                                                width: '100%',
-                                                height: '200px',
-                                                backgroundImage: `url(${project.imageUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600'})`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center',
-                                                backgroundColor: 'var(--color-bg-light)'
-                                            }}></div>
-
-                                            <div style={{ padding: '1.5rem' }}>
-                                                <span className="badge badge-primary" style={{ marginBottom: '0.5rem', textTransform: 'capitalize' }}>
-                                                    {project.category}
-                                                </span>
-
-                                                <h3 style={{
-                                                    fontSize: '1.125rem',
-                                                    fontWeight: '700',
-                                                    color: 'var(--color-text-primary)',
-                                                    marginBottom: '0.5rem',
-                                                    whiteSpace: 'nowrap',
+                                        return (
+                                            <Link to={`/project/${project.$id}`} key={project.$id} style={{ textDecoration: 'none' }}>
+                                                <div className="card project-card" style={{
+                                                    padding: 0,
                                                     overflow: 'hidden',
-                                                    textOverflow: 'ellipsis'
+                                                    cursor: 'pointer',
+                                                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                                                 }}>
-                                                    {project.name}
-                                                </h3>
+                                                    <div style={{
+                                                        width: '100%',
+                                                        height: '200px',
+                                                        backgroundImage: `url(${project.imageUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600'})`,
+                                                        backgroundSize: 'cover',
+                                                        backgroundPosition: 'center',
+                                                        backgroundColor: 'var(--color-bg-light)'
+                                                    }}></div>
 
-                                                <p style={{
-                                                    fontSize: '0.875rem',
-                                                    color: 'var(--color-text-secondary)',
-                                                    marginBottom: '1rem',
-                                                    lineHeight: '1.5',
-                                                    height: '2.625rem',
-                                                    overflow: 'hidden',
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical'
-                                                }}>
-                                                    {project.description}
-                                                </p>
+                                                    <div style={{ padding: '1.5rem' }}>
+                                                        <span className="badge badge-primary" style={{ marginBottom: '0.5rem', textTransform: 'capitalize' }}>
+                                                            {project.category}
+                                                        </span>
 
-                                                <div className="progress" style={{ marginBottom: '0.75rem' }}>
-                                                    <div className="progress-bar" style={{ width: `${Math.min(percentage, 100)}%` }}></div>
-                                                </div>
+                                                        <h3 style={{
+                                                            fontSize: '1.125rem',
+                                                            fontWeight: '700',
+                                                            color: 'var(--color-text-primary)',
+                                                            marginBottom: '0.5rem',
+                                                            whiteSpace: 'nowrap',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis'
+                                                        }}>
+                                                            {project.name}
+                                                        </h3>
 
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                    <div>
-                                                        <p style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-primary)' }}>
-                                                            ${project.raised.toLocaleString()}
+                                                        <p style={{
+                                                            fontSize: '0.875rem',
+                                                            color: 'var(--color-text-secondary)',
+                                                            marginBottom: '1rem',
+                                                            lineHeight: '1.5',
+                                                            height: '2.625rem',
+                                                            overflow: 'hidden',
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical'
+                                                        }}>
+                                                            {project.description}
                                                         </p>
-                                                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-                                                            raised of ${project.fundingGoal.toLocaleString()}
-                                                        </p>
+
+                                                        <div className="progress" style={{ marginBottom: '0.75rem' }}>
+                                                            <div className="progress-bar" style={{ width: `${Math.min(percentage, 100)}%` }}></div>
+                                                        </div>
+
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                                            <div>
+                                                                <p style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-primary)' }}>
+                                                                    ₦{project.raised.toLocaleString()}
+                                                                </p>
+                                                                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                                                                    raised of ₦{project.fundingGoal.toLocaleString()}
+                                                                </p>
+                                                            </div>
+                                                            <div style={{ textAlign: 'right' }}>
+                                                                <p style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-text-primary)' }}>
+                                                                    {percentage}%
+                                                                </p>
+                                                                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                                                                    {daysLeft} days left
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div style={{ textAlign: 'right' }}>
-                                                        <p style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-text-primary)' }}>
-                                                            {percentage}%
-                                                        </p>
-                                                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-                                                            {daysLeft} days left
-                                                        </p>
-                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                        </div>
+                                            </Link>
+                                        );
+                                    })}
+                            </div>
+
+                            {/* Pagination Controls */}
+                            {projects.length > projectsPerPage && (
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', padding: '2rem 0' }}>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                        style={{ minWidth: '100px' }}
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        {Array.from({ length: Math.ceil(projects.length / projectsPerPage) }, (_, i) => i + 1).map(pageNum => (
+                                            <button
+                                                key={pageNum}
+                                                onClick={() => setCurrentPage(pageNum)}
+                                                style={{
+                                                    width: '40px',
+                                                    height: '40px',
+                                                    border: '1px solid var(--color-border)',
+                                                    borderRadius: 'var(--radius-md)',
+                                                    backgroundColor: currentPage === pageNum ? 'var(--color-primary)' : 'white',
+                                                    color: currentPage === pageNum ? 'white' : 'var(--color-text-primary)',
+                                                    fontWeight: currentPage === pageNum ? '600' : '400',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                {pageNum}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(projects.length / projectsPerPage)))}
+                                        disabled={currentPage === Math.ceil(projects.length / projectsPerPage)}
+                                        style={{ minWidth: '100px' }}
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </main>

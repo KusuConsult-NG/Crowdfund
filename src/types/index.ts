@@ -37,10 +37,21 @@ export interface Update extends AppwriteDocument {
     content: string;
 }
 
+export type AdminRole =
+    | 'Director'
+    | 'General Secretary'
+    | 'DCC Secretary'
+    | 'LCC Secretary'
+    | 'LC Secretary'
+    | 'Agency Secretary'
+    | 'Group Secretary'
+    | 'Committee Secretary';
+
 export interface UserProfile extends AppwriteDocument {
     userId: string;
     name: string;
     email: string;
     role: 'Donor' | 'Organizer' | 'SuperAdmin';
+    adminRole?: AdminRole; // Only set for Organizer role
     status: 'Active' | 'Inactive';
 }

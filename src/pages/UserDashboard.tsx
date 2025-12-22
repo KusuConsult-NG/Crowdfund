@@ -59,17 +59,7 @@ const UserDashboard: React.FC = () => {
         {
             icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M178.16,176H177a52,52,0,0,0-43-40,44,44,0,1,0-12,0,52,52,0,0,0-43,40h-1.17A19.16,19.16,0,0,0,58.64,194a4,4,0,0,0,4.85,3.89l73.65-15.34,73.65,15.34A4,4,0,0,0,216,194,19.16,19.16,0,0,0,178.16,176ZM88,112a32,32,0,1,1,32,32A32,32,0,0,1,88,112Zm92.61,64.62-52.61-11-52.61,11a36,36,0,0,1,62.1-32.33A36,36,0,0,1,180.61,176.62Z" /></svg>,
             label: 'My Contributions',
-            path: '#'
-        },
-        {
-            icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm40-68a28,28,0,0,1-28,28h-4v8a8,8,0,0,1-16,0v-8H104a8,8,0,0,1,0-16h36a12,12,0,0,0,0-24H116a28,28,0,0,1,0-56h4V72a8,8,0,0,1,16,0v8h16a8,8,0,0,1,0,16H116a12,12,0,0,0,0,24h24A28,28,0,0,1,168,148Z" /></svg>,
-            label: 'Saved Projects',
-            path: '#'
-        },
-        {
-            icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M216,64H176V56a24,24,0,0,0-24-24H104A24,24,0,0,0,80,56v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V80h8a8,8,0,0,0,0-16ZM96,56a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,152H64V80H192Z" /></svg>,
-            label: 'Transaction History',
-            path: '#'
+            path: '/user/donations'
         }
     ];
 
@@ -102,7 +92,7 @@ const UserDashboard: React.FC = () => {
                         }}>
                             <div className="stat-card">
                                 <p className="stat-label">Total Contributed</p>
-                                <p className="stat-value primary">${stats.totalContributed.toLocaleString()}</p>
+                                <p className="stat-value primary">₦{stats.totalContributed.toLocaleString()}</p>
                             </div>
                             <div className="stat-card">
                                 <p className="stat-label">Projects Supported</p>
@@ -141,7 +131,7 @@ const UserDashboard: React.FC = () => {
                                                     <td style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>
                                                         {contribution.projectId.substring(0, 12)}...
                                                     </td>
-                                                    <td>${contribution.amount.toLocaleString()}</td>
+                                                    <td>₦{contribution.amount.toLocaleString()}</td>
                                                     <td>{contribution.$createdAt ? new Date(contribution.$createdAt).toLocaleDateString() : 'N/A'}</td>
                                                     <td>
                                                         <span className={`badge badge-success`}>
@@ -190,10 +180,10 @@ const UserDashboard: React.FC = () => {
                                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                     <div>
                                                         <p style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--color-primary)' }}>
-                                                            ${project.raised.toLocaleString()}
+                                                            ₦{project.raised.toLocaleString()}
                                                         </p>
-                                                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-                                                            of ${project.fundingGoal.toLocaleString()}
+                                                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>
+                                                            of ₦{project.fundingGoal.toLocaleString()}
                                                         </p>
                                                     </div>
                                                     <div style={{ textAlign: 'right' }}>

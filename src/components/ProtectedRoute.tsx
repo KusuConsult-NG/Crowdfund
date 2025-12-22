@@ -4,10 +4,12 @@ import { useAuth } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
+    requireAdmin?: boolean;
+    requireDonor?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const { user, loading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin = false, requireDonor = false }) => {
+    const { user, userProfile, loading, isAdmin, isDonor, isSuperAdmin } = useAuth();
 
     if (loading) {
         return (
@@ -36,6 +38,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
     if (!user) {
         return <Navigate to="/login" replace />;
+    }
+
+    // Check role-based access
+    if (requireAdmin && !isAdmin() && !isSuperAdmin()) {
+        // Redirect donors to their dashboard if they try to access admin routes
+        return <Navigate to="/user/dashboard" replace />;
+    }
+
+    if (requireDonor && !isDonor()) {
+        // Redirect admins to their dashboard if they try to access donor-only routes
+        return <Navigate to="/admin/dashboard" replace />;
     }
 
     return <>{children}</>;

@@ -54,6 +54,18 @@ export const projectService = {
         );
     },
 
+    // Get all projects for admin/superadmin (no owner filter)
+    async getAllProjectsForAdmin(limit = 100) {
+        return await databases.listDocuments<Project & { $id: string }>(
+            DATABASE_ID,
+            COLLECTIONS.PROJECTS,
+            [
+                Query.orderDesc('$createdAt'),
+                Query.limit(limit)
+            ]
+        );
+    },
+
     // Get a project by ID
     async getProject(projectId: string) {
         return await databases.getDocument<Project & { $id: string }>(

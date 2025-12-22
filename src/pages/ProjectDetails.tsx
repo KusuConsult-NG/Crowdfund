@@ -207,7 +207,7 @@ const ProjectDetails: React.FC = () => {
                                                 </div>
                                             </div>
                                             <p style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--color-primary)' }}>
-                                                ${donation.amount.toLocaleString()}
+                                                ₦{donation.amount.toLocaleString()}
                                             </p>
                                         </div>
                                     )) : (
@@ -230,10 +230,10 @@ const ProjectDetails: React.FC = () => {
 
                                 <div style={{ marginBottom: '1.5rem' }}>
                                     <p style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--color-primary)', marginBottom: '0.25rem' }}>
-                                        ${project.raised.toLocaleString()}
+                                        ₦{project.raised.toLocaleString()}
                                     </p>
                                     <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>
-                                        raised of ${project.fundingGoal.toLocaleString()} goal
+                                        raised of ₦{project.fundingGoal.toLocaleString()} goal
                                     </p>
 
                                     <div className="progress" style={{ marginBottom: '1rem' }}>

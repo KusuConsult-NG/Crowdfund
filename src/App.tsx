@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import LandingPage from './pages/LandingPage';
 import AdminDashboard from './pages/AdminDashboard';
 import EditProject from './pages/EditProject';
 import DonorContributions from './pages/DonorContributions';
@@ -11,10 +12,12 @@ import UserManagement from './pages/UserManagement';
 import ContentModeration from './pages/ContentModeration';
 import GlobalSettings from './pages/GlobalSettings';
 import DonorSignup from './pages/DonorSignup';
+import AdminSignup from './pages/AdminSignup';
 import DonorLogin from './pages/DonorLogin';
 import ProjectDiscovery from './pages/ProjectDiscovery';
 import CreateProject from './pages/CreateProject';
 import UserDashboard from './pages/UserDashboard';
+import MyDonations from './pages/MyDonations';
 import ProjectDetails from './pages/ProjectDetails';
 import PledgeProject from './pages/PledgeProject';
 
@@ -24,23 +27,26 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Default route */}
-          <Route path="/" element={<Navigate to="/discover" replace />} />
+          <Route path="/" element={<LandingPage />} />
 
           {/* Public routes */}
           <Route path="/discover" element={<ProjectDiscovery />} />
           <Route path="/project/:id" element={<ProjectDetails />} />
           <Route path="/project/:id/pledge" element={<PledgeProject />} />
-          <Route path="/signup" element={<DonorSignup />} />
+          <Route path="/signup" element={<Navigate to="/signup/donor" replace />} />
+          <Route path="/signup/donor" element={<DonorSignup />} />
+          <Route path="/signup/admin" element={<AdminSignup />} />
           <Route path="/login" element={<DonorLogin />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<SetNewPassword />} />
 
           {/* Protected User routes */}
           <Route path="/user/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
-          <Route path="/create-project" element={<ProtectedRoute><CreateProject /></ProtectedRoute>} />
+          <Route path="/user/donations" element={<ProtectedRoute><MyDonations /></ProtectedRoute>} />
 
           {/* Protected Admin routes */}
-          <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/create-project" element={<ProtectedRoute requireAdmin><CreateProject /></ProtectedRoute>} />
+          <Route path="/admin/dashboard" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/projects/edit/:id" element={<ProtectedRoute><EditProject /></ProtectedRoute>} />
           <Route path="/admin/projects/:id/contributions" element={<ProtectedRoute><DonorContributions /></ProtectedRoute>} />
 

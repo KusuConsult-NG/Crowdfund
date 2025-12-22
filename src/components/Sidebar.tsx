@@ -32,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, userRole = 'Admin' }) => {
                 minHeight: '700px',
                 height: '100%'
             }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '1.5rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <h1 style={{
                             fontSize: '1rem',

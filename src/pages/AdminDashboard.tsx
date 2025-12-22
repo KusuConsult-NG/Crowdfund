@@ -9,7 +9,7 @@ import { Project, Donation } from '../types';
 import { updateService } from '../services/updateService';
 
 const AdminDashboard: React.FC = () => {
-    const { user } = useAuth();
+    const { user, isSuperAdmin } = useAuth();
     const [projects, setProjects] = useState<(Project & { $id: string })[]>([]);
     const [recentDonations, setRecentDonations] = useState<(Donation & { $id: string })[]>([]);
     const [loading, setLoading] = useState(true);
@@ -31,7 +31,12 @@ const AdminDashboard: React.FC = () => {
         if (!user) return;
         setLoading(true);
         try {
-            const projectRes = await projectService.getProjectsByOrganizer(user.$id);
+            let projectRes;
+            if (isSuperAdmin()) {
+                projectRes = await projectService.getAllProjectsForAdmin();
+            } else {
+                projectRes = await projectService.getProjectsByOrganizer(user.$id);
+            }
             const myProjects = projectRes.documents;
             setProjects(myProjects);
 
@@ -123,7 +128,7 @@ const AdminDashboard: React.FC = () => {
         {
             icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" /></svg>,
             label: 'Create Project',
-            path: '/projects/create'
+            path: '/create-project'
         }
     ];
 
@@ -132,12 +137,12 @@ const AdminDashboard: React.FC = () => {
             <Navbar showCreateButton={true} />
 
             <div style={{ display: 'flex', width: '100%', marginTop: '60px' }}>
-                <Sidebar menuItems={sidebarItems} userRole="Organizer" />
+                <Sidebar menuItems={sidebarItems} userRole={isSuperAdmin() ? "SuperAdmin" : "Organizer"} />
 
                 <main style={{ flex: 1, padding: '1.25rem' }}>
                     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                         <h2 style={{ fontSize: '1.875rem', fontWeight: '700', padding: '1rem', color: 'var(--color-text-primary)' }}>
-                            Welcome back, {user?.name || 'Organizer'}
+                            Welcome back, {user?.name || (isSuperAdmin() ? 'Super Admin' : 'Organizer')}
                         </h2>
 
                         {/* Stats Cards */}
@@ -150,7 +155,7 @@ const AdminDashboard: React.FC = () => {
                             <div className="card" style={{ padding: '1.5rem' }}>
                                 <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', fontWeight: '500' }}>Total Raised</p>
                                 <p style={{ fontSize: '1.875rem', fontWeight: '700', margin: '0.5rem 0', color: 'var(--color-primary)' }}>
-                                    ${stats.totalRaised.toLocaleString()}
+                                    ₦{stats.totalRaised.toLocaleString()}
                                 </p>
                                 <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>Across all campaigns</p>
                             </div>
@@ -166,8 +171,13 @@ const AdminDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginTop: '1rem' }}>
-                            <div>
+                        <div className="admin-grid" style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                            gap: '2rem',
+                            marginTop: '1rem'
+                        }}>
+                            <div style={{ minWidth: 0 }}>
                                 <h2 style={{ fontSize: '1.375rem', fontWeight: '700', padding: '1rem 1rem 0.75rem', color: 'var(--color-text-primary)' }}>
                                     Your Projects
                                 </h2>
@@ -177,14 +187,15 @@ const AdminDashboard: React.FC = () => {
                                     <input
                                         type="text"
                                         placeholder="Search by name"
+                                        className="input-search"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        style={{ height: '2.5rem', flex: 1 }}
+                                        style={{ height: '2.75rem', flex: 1, minWidth: '150px', padding: '0 1rem' }}
                                     />
                                     <select
                                         value={statusFilter}
                                         onChange={(e) => setStatusFilter(e.target.value)}
-                                        style={{ width: '10rem', height: '2.5rem' }}
+                                        style={{ minWidth: '12rem', height: '2.75rem', padding: '0 0.75rem' }}
                                     >
                                         <option value="all">All Status</option>
                                         <option value="active">Active</option>
@@ -194,45 +205,51 @@ const AdminDashboard: React.FC = () => {
                                 </div>
 
                                 <div style={{ padding: '0.75rem 1rem' }}>
-                                    <div className="table-container">
+                                    <div className="table-container" style={{ overflowX: 'auto' }}>
                                         {loading ? (
                                             <p style={{ padding: '2rem', textAlign: 'center' }}>Loading projects...</p>
                                         ) : filteredProjects.length === 0 ? (
                                             <p style={{ padding: '2rem', textAlign: 'center' }}>No projects found.</p>
                                         ) : (
-                                            <table>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
-                                                        <th>Status</th>
-                                                        <th>Goal</th>
-                                                        <th style={{ textAlign: 'center' }}>Actions</th>
+                                                        <th style={{ textAlign: 'left', padding: '1rem 0.75rem', fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)', borderBottom: '2px solid var(--color-border-light)', minWidth: '150px' }}>Name</th>
+                                                        <th style={{ textAlign: 'left', padding: '1rem 0.75rem', fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)', borderBottom: '2px solid var(--color-border-light)', minWidth: '100px' }}>Status</th>
+                                                        <th style={{ textAlign: 'left', padding: '1rem 0.75rem', fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)', borderBottom: '2px solid var(--color-border-light)', minWidth: '120px' }}>Goal</th>
+                                                        <th style={{ textAlign: 'center', padding: '1rem 0.75rem', fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)', borderBottom: '2px solid var(--color-border-light)', minWidth: '150px' }}>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {filteredProjects.map((project) => (
-                                                        <tr key={project.$id}>
-                                                            <td style={{ fontWeight: '500' }}>{project.name}</td>
-                                                            <td>
+                                                        <tr key={project.$id} style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+                                                            <td style={{
+                                                                fontWeight: '500',
+                                                                padding: '1.25rem 0.75rem',
+                                                                lineHeight: '1.4'
+                                                            }}>
+                                                                {project.name}
+                                                            </td>
+                                                            <td style={{ padding: '1.25rem 0.75rem' }}>
                                                                 <span className={`badge badge-${project.status === 'active' ? 'success' :
                                                                     project.status === 'completed' ? 'info' : 'warning'
-                                                                    }`}>
+                                                                    }`} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
                                                                     {project.status.toUpperCase()}
                                                                 </span>
                                                             </td>
-                                                            <td>${project.fundingGoal.toLocaleString()}</td>
-                                                            <td>
-                                                                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                                                                    <button onClick={() => openUpdateModal(project.$id)} title="Post Update" className="btn btn-secondary" style={{ padding: '0.4rem' }}>
+                                                            <td style={{ fontWeight: '600', padding: '1.25rem 0.75rem', whiteSpace: 'nowrap' }}>₦{project.fundingGoal.toLocaleString()}</td>
+                                                            <td style={{ padding: '1.25rem 0.75rem' }}>
+                                                                <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+                                                                    <button onClick={() => openUpdateModal(project.$id)} title="Post Update" className="btn btn-secondary" style={{ padding: '0.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                                         📝
                                                                     </button>
-                                                                    <Link to={`/admin/projects/${project.$id}/contributions`} title="View Donors" className="btn btn-secondary" style={{ padding: '0.4rem' }}>
+                                                                    <Link to={`/admin/projects/${project.$id}/contributions`} title="View Donors" className="btn btn-secondary" style={{ padding: '0.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                                         👥
                                                                     </Link>
-                                                                    <Link to={`/admin/projects/edit/${project.$id}`} title="Edit" className="btn btn-secondary" style={{ padding: '0.4rem' }}>
+                                                                    <Link to={`/admin/projects/edit/${project.$id}`} title="Edit" className="btn btn-secondary" style={{ padding: '0.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                                         ✏️
                                                                     </Link>
-                                                                    <button onClick={() => handleDelete(project.$id)} title="Delete" className="btn btn-secondary" style={{ padding: '0.4rem', color: 'var(--color-error)' }}>
+                                                                    <button onClick={() => handleDelete(project.$id)} title="Delete" className="btn btn-secondary" style={{ padding: '0.5rem', color: 'var(--color-error)', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                                         🗑️
                                                                     </button>
                                                                 </div>
@@ -259,7 +276,7 @@ const AdminDashboard: React.FC = () => {
                                                 {recentDonations.map(donation => (
                                                     <div key={donation.$id} style={{ borderBottom: '1px solid var(--color-border-light)', paddingBottom: '0.75rem' }}>
                                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                            <p style={{ fontWeight: '600' }}>${donation.amount.toLocaleString()}</p>
+                                                            <p style={{ fontWeight: '600' }}>₦{donation.amount.toLocaleString()}</p>
                                                             <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
                                                                 {new Date(donation.$createdAt).toLocaleDateString()}
                                                             </p>

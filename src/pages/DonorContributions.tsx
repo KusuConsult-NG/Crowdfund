@@ -70,7 +70,7 @@ const DonorContributions: React.FC = () => {
                     <div style={{ display: 'flex', gap: '1rem', padding: '1rem', flexWrap: 'wrap' }}>
                         <div className="stat-card" style={{ minWidth: '158px', flex: 1 }}>
                             <p className="stat-label">Total Contributions</p>
-                            <p className="stat-value primary">${totalRaised.toLocaleString()}</p>
+                            <p className="stat-value primary">₦{totalRaised.toLocaleString()}</p>
                         </div>
                         <div className="stat-card" style={{ minWidth: '158px', flex: 1 }}>
                             <p className="stat-label">Total Donors</p>
@@ -109,7 +109,7 @@ const DonorContributions: React.FC = () => {
                                             <td style={{ color: 'var(--color-text-primary)', fontWeight: '500' }}>
                                                 {donation.anonymous ? 'Anonymous' : `User ${donation.userId.substring(0, 8)}...`}
                                             </td>
-                                            <td>${donation.amount.toLocaleString()}</td>
+                                            <td>₦{donation.amount.toLocaleString()}</td>
                                             <td>{new Date(donation.$createdAt).toLocaleDateString()}</td>
                                             <td style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
                                                 {donation.message || '-'}

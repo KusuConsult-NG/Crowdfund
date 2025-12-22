@@ -1,17 +1,31 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import { projectService } from '../services/projectService';
 import { useAuth } from '../contexts/AuthContext';
 
 const CreateProject: React.FC = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, isSuperAdmin } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const sidebarItems = [
+        {
+            icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.11l80,75.48A16,16,0,0,1,224,115.55Z" /></svg>,
+            label: 'Dashboard',
+            path: '/admin/dashboard'
+        },
+        {
+            icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" /></svg>,
+            label: 'Create Project',
+            path: '/create-project'
+        }
+    ];
 
     // Form State
     const [projectName, setProjectName] = useState('');
@@ -74,65 +88,65 @@ const CreateProject: React.FC = () => {
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg-white)' }}>
+        <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--color-bg-light)' }}>
             <Navbar showCreateButton={false} />
 
-            <main style={{ paddingTop: '80px', padding: '5rem 10rem 1.25rem' }}>
-                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    {error && (
-                        <div style={{
-                            padding: '1rem',
-                            backgroundColor: 'var(--color-error-light)',
-                            color: 'var(--color-error)',
-                            borderRadius: 'var(--radius-md)',
-                            marginBottom: '1rem',
-                            fontSize: '0.875rem'
-                        }}>
-                            {error}
-                        </div>
-                    )}
+            <div style={{ display: 'flex', width: '100%', marginTop: '60px' }}>
+                <Sidebar menuItems={sidebarItems} userRole={isSuperAdmin() ? "SuperAdmin" : "Organizer"} />
 
-                    {/* Progress Indicator */}
-                    <div style={{ padding: '1rem 0 2rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            {[1, 2].map((s) => (
-                                <div key={s} style={{
-                                    flex: 1,
-                                    height: '4px',
-                                    backgroundColor: s <= step ? 'var(--color-primary)' : 'var(--color-border)',
-                                    marginRight: s < 2 ? '0.5rem' : 0,
-                                    borderRadius: 'var(--radius-full)',
-                                    transition: 'background-color 0.3s ease'
-                                }}></div>
-                            ))}
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{
-                                fontSize: '0.875rem',
-                                fontWeight: '600',
-                                color: step >= 1 ? 'var(--color-primary)' : 'var(--color-text-secondary)'
-                            }}>Basic Info</span>
-                            <span style={{
-                                fontSize: '0.875rem',
-                                fontWeight: '600',
-                                color: step >= 2 ? 'var(--color-primary)' : 'var(--color-text-secondary)'
-                            }}>Details</span>
-                        </div>
-                    </div>
+                <main style={{ flex: 1, padding: '2rem' }}>
+                    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                        {error && (
+                            <div style={{
+                                padding: '1rem',
+                                backgroundColor: 'var(--color-error-light)',
+                                color: 'var(--color-error)',
+                                borderRadius: 'var(--radius-md)',
+                                marginBottom: '1rem',
+                                fontSize: '0.875rem'
+                            }}>
+                                {error}
+                            </div>
+                        )}
 
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', padding: '1rem 0', color: 'var(--color-text-primary)' }}>
-                        {step === 1 && 'Create Your Project'}
-                        {step === 2 && 'Project Details'}
-                    </h2>
+                        {/* Progress Indicator */}
+                        <div style={{ padding: '1rem 0 2rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                {[1, 2].map((s) => (
+                                    <div key={s} style={{
+                                        flex: 1,
+                                        height: '4px',
+                                        backgroundColor: s <= step ? 'var(--color-primary)' : 'var(--color-border)',
+                                        marginRight: s < 2 ? '0.5rem' : 0,
+                                        borderRadius: 'var(--radius-full)',
+                                        transition: 'background-color 0.3s ease'
+                                    }}></div>
+                                ))}
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <span style={{
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    color: step >= 1 ? 'var(--color-primary)' : 'var(--color-text-secondary)'
+                                }}>Basic Info</span>
+                                <span style={{
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    color: step >= 2 ? 'var(--color-primary)' : 'var(--color-text-secondary)'
+                                }}>Details</span>
+                            </div>
+                        </div>
 
-                    {/* Step 1: Basic Info */}
-                    {step === 1 && (
-                        <div>
-                            <div style={{ padding: '0.75rem 0' }}>
-                                <label>
-                                    <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                        Project Name *
-                                    </p>
+                        <h2 style={{ fontSize: '2rem', fontWeight: '700', padding: '1rem 0', color: 'var(--color-text-primary)' }}>
+                            {step === 1 && 'Create Your Project'}
+                            {step === 2 && 'Project Details'}
+                        </h2>
+
+                        {/* Step 1: Basic Info */}
+                        {step === 1 && (
+                            <div className="card" style={{ padding: '2rem' }}>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label className="form-label">Project Name *</label>
                                     <input
                                         type="text"
                                         placeholder="Give your project a clear, memorable name"
@@ -140,14 +154,10 @@ const CreateProject: React.FC = () => {
                                         onChange={(e) => setProjectName(e.target.value)}
                                         disabled={loading}
                                     />
-                                </label>
-                            </div>
+                                </div>
 
-                            <div style={{ padding: '0.75rem 0' }}>
-                                <label>
-                                    <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                        Project Description *
-                                    </p>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label className="form-label">Project Description *</label>
                                     <textarea
                                         placeholder="Describe your project, its goals, and why it matters..."
                                         value={description}
@@ -155,215 +165,201 @@ const CreateProject: React.FC = () => {
                                         style={{ minHeight: '150px' }}
                                         disabled={loading}
                                     />
-                                </label>
-                            </div>
+                                </div>
 
-                            <div style={{ padding: '0.75rem 0' }}>
-                                <label>
-                                    <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                        Category *
-                                    </p>
-                                    <select
-                                        value={category}
-                                        onChange={(e) => setCategory(e.target.value)}
-                                        disabled={loading}
-                                    >
-                                        <option value="">Select a category</option>
-                                        <option value="building">Building Projects</option>
-                                        <option value="outreach">Community Outreach</option>
-                                        <option value="mission">Mission Trips</option>
-                                        <option value="equipment">Equipment Upgrade</option>
-                                        <option value="education">Education & Training</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </label>
-                            </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                    <div>
+                                        <label className="form-label">Category *</label>
+                                        <select
+                                            value={category}
+                                            onChange={(e) => setCategory(e.target.value)}
+                                            disabled={loading}
+                                        >
+                                            <option value="">Select a category</option>
+                                            <option value="building">Building Projects</option>
+                                            <option value="outreach">Community Outreach</option>
+                                            <option value="mission">Mission Trips</option>
+                                            <option value="equipment">Equipment Upgrade</option>
+                                            <option value="education">Education & Training</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
 
-                            <div style={{ padding: '0.75rem 0' }}>
-                                <label>
-                                    <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                        Funding Goal (USD) *
-                                    </p>
-                                    <input
-                                        type="number"
-                                        placeholder="10000"
-                                        value={fundingGoal}
-                                        onChange={(e) => setFundingGoal(e.target.value)}
-                                        disabled={loading}
-                                    />
-                                </label>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Step 2: Details */}
-                    {step === 2 && (
-                        <div>
-                            <div style={{ padding: '0.75rem 0' }}>
-                                <label>
-                                    <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                        Campaign Duration *
-                                    </p>
-                                    <select
-                                        value={duration}
-                                        onChange={(e) => setDuration(e.target.value)}
-                                        disabled={loading}
-                                    >
-                                        <option value="">Select duration</option>
-                                        <option value="30">30 days</option>
-                                        <option value="45">45 days</option>
-                                        <option value="60">60 days</option>
-                                        <option value="90">90 days</option>
-                                    </select>
-                                </label>
-                            </div>
-
-                            <div style={{ padding: '0.75rem 0' }}>
-                                <label>
-                                    <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                        Project Location
-                                    </p>
-                                    <input
-                                        type="text"
-                                        placeholder="City, State"
-                                        value={location}
-                                        onChange={(e) => setLocation(e.target.value)}
-                                        disabled={loading}
-                                    />
-                                </label>
-                            </div>
-
-                            <div style={{ padding: '0.75rem 0' }}>
-                                <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                    Project Image
-                                </p>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleFileChange}
-                                    style={{ display: 'none' }}
-                                    accept="image/*"
-                                />
-                                <div
-                                    onClick={() => fileInputRef.current?.click()}
-                                    style={{
-                                        border: '2px dashed var(--color-border)',
-                                        borderRadius: 'var(--radius-lg)',
-                                        padding: '1.5rem',
-                                        textAlign: 'center',
-                                        cursor: loading ? 'not-allowed' : 'pointer',
-                                        transition: 'all 0.2s ease',
-                                        position: 'relative',
-                                        overflow: 'hidden',
-                                        minHeight: '200px',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
-                                    }}
-                                    onMouseEnter={(e) => !loading && (e.currentTarget.style.borderColor = 'var(--color-primary)')}
-                                    onMouseLeave={(e) => !loading && (e.currentTarget.style.borderColor = 'var(--color-border)')}
-                                >
-                                    {imagePreview ? (
-                                        <img
-                                            src={imagePreview}
-                                            alt="Preview"
-                                            style={{
-                                                position: 'absolute',
-                                                top: 0,
-                                                left: 0,
-                                                width: '100%',
-                                                height: '100%',
-                                                objectFit: 'cover',
-                                                zIndex: 1
-                                            }}
+                                    <div>
+                                        <label className="form-label">Funding Goal (NGN) *</label>
+                                        <input
+                                            type="number"
+                                            placeholder="10000"
+                                            value={fundingGoal}
+                                            onChange={(e) => setFundingGoal(e.target.value)}
+                                            disabled={loading}
                                         />
-                                    ) : (
-                                        <>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="var(--color-text-secondary)" viewBox="0 0 256 256" style={{ marginBottom: '1rem' }}>
-                                                <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,172l52-52,80,80H40Zm176,28H194.63l-36-36,20-20L216,181.38V200ZM144,100a12,12,0,1,1,12,12A12,12,0,0,1,144,100Z" />
-                                            </svg>
-                                            <p style={{ color: 'var(--color-text-primary)', fontWeight: '500', marginBottom: '0.5rem' }}>
-                                                Click to upload project image
-                                            </p>
-                                            <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>
-                                                PNG, JPG up to 10MB
-                                            </p>
-                                        </>
-                                    )}
-                                    {imagePreview && !loading && (
-                                        <div style={{
-                                            position: 'absolute',
-                                            bottom: '10px',
-                                            right: '10px',
-                                            backgroundColor: 'rgba(0,0,0,0.5)',
-                                            color: 'white',
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            fontSize: '0.75rem',
-                                            zIndex: 2
-                                        }}>
-                                            Change Image
-                                        </div>
-                                    )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
-
-                    {/* Navigation Buttons */}
-                    <div style={{ display: 'flex', gap: '1rem', padding: '2rem 0', justifyContent: 'space-between' }}>
-                        {step > 1 && (
-                            <button
-                                className="btn btn-secondary"
-                                onClick={() => setStep(step - 1)}
-                                style={{ minWidth: '120px' }}
-                                disabled={loading}
-                            >
-                                Previous
-                            </button>
                         )}
-                        <div style={{ flex: 1 }}></div>
-                        {step < 2 ? (
-                            <button
-                                className="btn btn-primary"
-                                onClick={() => {
-                                    if (!projectName || !description || !category || !fundingGoal) {
-                                        setError('Please fill in all required fields');
-                                        return;
-                                    }
-                                    setError(null);
-                                    setStep(step + 1);
-                                }}
-                                style={{ minWidth: '120px' }}
-                                disabled={loading}
-                            >
-                                Next
-                            </button>
-                        ) : (
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <Link to="/admin/dashboard">
-                                    <button
-                                        className="btn btn-secondary"
-                                        style={{ minWidth: '120px' }}
-                                        disabled={loading}
+
+                        {/* Step 2: Details */}
+                        {step === 2 && (
+                            <div className="card" style={{ padding: '2rem' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                                    <div>
+                                        <label className="form-label">Campaign Duration *</label>
+                                        <select
+                                            value={duration}
+                                            onChange={(e) => setDuration(e.target.value)}
+                                            disabled={loading}
+                                        >
+                                            <option value="">Select duration</option>
+                                            <option value="30">30 days</option>
+                                            <option value="45">45 days</option>
+                                            <option value="60">60 days</option>
+                                            <option value="90">90 days</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="form-label">Project Location</label>
+                                        <input
+                                            type="text"
+                                            placeholder="City, State"
+                                            value={location}
+                                            onChange={(e) => setLocation(e.target.value)}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="form-label">Project Image</label>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={handleFileChange}
+                                        style={{ display: 'none' }}
+                                        accept="image/*"
+                                    />
+                                    <div
+                                        onClick={() => fileInputRef.current?.click()}
+                                        style={{
+                                            border: '2px dashed var(--color-border)',
+                                            borderRadius: 'var(--radius-lg)',
+                                            padding: '1.5rem',
+                                            textAlign: 'center',
+                                            cursor: loading ? 'not-allowed' : 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            position: 'relative',
+                                            overflow: 'hidden',
+                                            minHeight: '200px',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                        onMouseEnter={(e) => !loading && (e.currentTarget.style.borderColor = 'var(--color-primary)')}
+                                        onMouseLeave={(e) => !loading && (e.currentTarget.style.borderColor = 'var(--color-border)')}
                                     >
-                                        Cancel
-                                    </button>
-                                </Link>
+                                        {imagePreview ? (
+                                            <img
+                                                src={imagePreview}
+                                                alt="Preview"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'cover',
+                                                    zIndex: 1
+                                                }}
+                                            />
+                                        ) : (
+                                            <>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="var(--color-text-secondary)" viewBox="0 0 256 256" style={{ marginBottom: '1rem' }}>
+                                                    <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,172l52-52,80,80H40Zm176,28H194.63l-36-36,20-20L216,181.38V200ZM144,100a12,12,0,1,1,12,12A12,12,0,0,1,144,100Z" />
+                                                </svg>
+                                                <p style={{ color: 'var(--color-text-primary)', fontWeight: '500', marginBottom: '0.5rem' }}>
+                                                    Click to upload project image
+                                                </p>
+                                                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>
+                                                    PNG, JPG up to 10MB
+                                                </p>
+                                            </>
+                                        )}
+                                        {imagePreview && !loading && (
+                                            <div style={{
+                                                position: 'absolute',
+                                                bottom: '10px',
+                                                right: '10px',
+                                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                                color: 'white',
+                                                padding: '4px 8px',
+                                                borderRadius: '4px',
+                                                fontSize: '0.75rem',
+                                                zIndex: 2
+                                            }}>
+                                                Change Image
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Navigation Buttons */}
+                        <div style={{ display: 'flex', gap: '1rem', padding: '2rem 0', justifyContent: 'space-between' }}>
+                            {step > 1 && (
                                 <button
-                                    className="btn btn-primary"
-                                    onClick={handlePublish}
+                                    className="btn btn-secondary"
+                                    onClick={() => setStep(step - 1)}
                                     style={{ minWidth: '120px' }}
                                     disabled={loading}
                                 >
-                                    {loading ? 'Publishing...' : 'Publish Project'}
+                                    Previous
                                 </button>
-                            </div>
-                        )}
+                            )}
+                            <div style={{ flex: 1 }}></div>
+                            {step < 2 ? (
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                        if (!projectName || !description || !category || !fundingGoal) {
+                                            setError('Please fill in all required fields');
+                                            return;
+                                        }
+                                        setError(null);
+                                        setStep(step + 1);
+                                    }}
+                                    style={{ minWidth: '120px' }}
+                                    disabled={loading}
+                                >
+                                    Next
+                                </button>
+                            ) : (
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <Link to="/admin/dashboard">
+                                        <button
+                                            className="btn btn-secondary"
+                                            style={{ minWidth: '120px' }}
+                                            disabled={loading}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </Link>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handlePublish}
+                                        style={{ minWidth: '120px' }}
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Publishing...' : 'Publish Project'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
     );
 };

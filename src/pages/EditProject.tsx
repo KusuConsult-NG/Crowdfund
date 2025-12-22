@@ -137,7 +137,7 @@ const EditProject: React.FC = () => {
                     <div style={{ padding: '0.75rem 1rem' }}>
                         <label style={{ display: 'flex', flexDirection: 'column', minWidth: '10rem', flex: 1 }}>
                             <p style={{ fontSize: '1rem', fontWeight: '500', paddingBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                                Funding Goal ($)
+                                Funding Goal (₦)
                             </p>
                             <input
                                 type="number"

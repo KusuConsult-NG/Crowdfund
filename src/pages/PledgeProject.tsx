@@ -75,7 +75,7 @@ const PledgeProject: React.FC = () => {
                     donorName: user.name,
                     projectName: project?.name || 'the project',
                     amount: parseFloat(pledgeAmount),
-                    currency: '$'
+                    currency: '₦'
                 });
             } catch (emailErr) {
                 console.warn('Failed to send receipt email:', emailErr);
@@ -185,7 +185,7 @@ const PledgeProject: React.FC = () => {
                                             }}
                                             disabled={submitting}
                                         >
-                                            ${amount}
+                                            ₦{amount}
                                         </button>
                                     ))}
                                 </div>
@@ -199,7 +199,7 @@ const PledgeProject: React.FC = () => {
                                     </p>
                                     <input
                                         type="number"
-                                        placeholder="Enter amount in USD"
+                                        placeholder="Enter amount in Naira"
                                         value={pledgeAmount}
                                         onChange={(e) => setPledgeAmount(e.target.value)}
                                         style={{ fontSize: '1.25rem', fontWeight: '600' }}
@@ -289,7 +289,7 @@ const PledgeProject: React.FC = () => {
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
                                             <span style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Your pledge:</span>
                                             <span style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--color-primary)' }}>
-                                                ${pledgeAmount || '0'}
+                                                ₦{pledgeAmount || '0'}
                                             </span>
                                         </div>
 
