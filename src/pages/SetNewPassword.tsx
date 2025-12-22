@@ -6,16 +6,21 @@ import Navbar from '../components/Navbar';
 const SetNewPassword: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+
+    // Form state
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+
+    // Authentication tokens from email link
     const [userId, setUserId] = useState('');
     const [secret, setSecret] = useState('');
 
     useEffect(() => {
-        // Extract userId and secret from URL parameters
+        // When component loads, extract the reset tokens from URL
+        // These are appended by Appwrite when user clicks the email link
         const userIdParam = searchParams.get('userId');
         const secretParam = searchParams.get('secret');
 
@@ -31,22 +36,25 @@ const SetNewPassword: React.FC = () => {
         e.preventDefault();
         setError('');
 
-        // Validation
+        // Validate that both fields are filled
         if (!newPassword || !confirmPassword) {
             setError('Please enter and confirm your new password');
             return;
         }
 
+        // Check password meets minimum length requirement
         if (newPassword.length < 8) {
             setError('Password must be at least 8 characters long');
             return;
         }
 
+        // Make sure passwords match
         if (newPassword !== confirmPassword) {
             setError('Passwords do not match');
             return;
         }
 
+        // Verify we have the necessary tokens
         if (!userId || !secret) {
             setError('Invalid password reset link. Please request a new one.');
             return;
@@ -55,10 +63,11 @@ const SetNewPassword: React.FC = () => {
         setLoading(true);
 
         try {
+            // Call the API to update the password
             await authService.completePasswordRecovery(userId, secret, newPassword);
             setSuccess(true);
 
-            // Redirect to login after 3 seconds
+            // Give user time to see success message before redirecting
             setTimeout(() => {
                 navigate('/login');
             }, 3000);

@@ -55,7 +55,8 @@ const PledgeProject: React.FC = () => {
         try {
             if (!id || !user) return;
 
-            // 1. Create donation record
+            // Step 1: Record the donation in our database
+            // This creates a permanent record of the contribution
             await donationService.createDonation({
                 projectId: id,
                 userId: user.$id,
@@ -65,10 +66,12 @@ const PledgeProject: React.FC = () => {
                 anonymous
             });
 
-            // 2. Update project raised amount
+            // Step 2: Update the project's raised amount
+            // This helps track progress towards the funding goal
             await projectService.incrementRaisedAmount(id, parseFloat(pledgeAmount));
 
-            // 3. Send donation receipt (async, don't block navigation)
+            // Step 3: Send a thank you email with receipt
+            // We do this async so it doesn't block the user experience
             try {
                 emailService.sendDonationReceipt({
                     to: user.email,
@@ -78,10 +81,11 @@ const PledgeProject: React.FC = () => {
                     currency: '₦'
                 });
             } catch (emailErr) {
+                // Email sending failed, but that's ok - log it and continue
                 console.warn('Failed to send receipt email:', emailErr);
             }
 
-            // Success redirect
+            // Success! Redirect user to their dashboard
             navigate('/user/dashboard');
         } catch (err: any) {
             console.error('Error after payment success:', err);

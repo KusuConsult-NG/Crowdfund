@@ -4,6 +4,7 @@ import { userService } from '../services/userService';
 import { Models } from 'appwrite';
 import { UserProfile, AdminRole } from '../types';
 
+// Define the shape of our authentication context
 interface AuthContextType {
     user: Models.User<Models.Preferences> | null;
     userProfile: UserProfile | null;
@@ -19,17 +20,28 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * AuthProvider component that wraps the app and provides authentication state
+ * This handles user sessions, login/logout, and role-based access control
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    // Store the current user from Appwrite auth
     const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
+    // Store the extended user profile from our database (includes role, etc.)
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    // Track loading state while checking authentication status
     const [loading, setLoading] = useState(true);
 
+    /**
+     * Check if user is authenticated and fetch their profile
+     * Called on mount and after login/logout
+     */
     const checkAuth = async () => {
         try {
             const currentUser = await authService.getCurrentUser();
             setUser(currentUser);
 
-            // Fetch user profile if logged in
+            // If we have a user, get their extended profile data
             if (currentUser) {
                 const profile = await userService.getUserProfile(currentUser.$id);
                 setUserProfile(profile);
@@ -37,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setUserProfile(null);
             }
         } catch (error) {
+            // If there's an error, clear the user state
             setUser(null);
             setUserProfile(null);
         } finally {
@@ -44,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    // Check auth status when the app first loads
     useEffect(() => {
         checkAuth();
     }, []);

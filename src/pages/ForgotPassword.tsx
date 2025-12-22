@@ -11,16 +11,20 @@ const ForgotPassword: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Reset any previous messages
         setError('');
         setSuccess(false);
 
-        // Validate email
+        // Basic email validation
         if (!email) {
             setError('Please enter your email address');
             return;
         }
 
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        // Check if email format is valid
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
             setError('Please enter a valid email address');
             return;
         }
