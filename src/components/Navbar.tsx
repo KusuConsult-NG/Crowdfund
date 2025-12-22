@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 interface NavbarProps {
@@ -8,6 +8,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { user, isAdmin, isSuperAdmin, isDonor, logout } = useAuth();
 
     const handleLogout = async () => {
@@ -21,6 +22,27 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
 
     // Show Create Project button only for admins and super admins
     const canCreateProject = (isAdmin() || isSuperAdmin()) && showCreateButton;
+
+    // Check if we're currently on a dashboard page
+    const isOnDashboard = location.pathname.includes('/dashboard');
+
+    // Get user initials from first 2 names
+    const getUserInitials = () => {
+        if (!user) return '';
+
+        if (user.name) {
+            const names = user.name.trim().split(' ');
+            if (names.length >= 2) {
+                // Get first letter of first two names
+                return (names[0].charAt(0) + names[1].charAt(0)).toUpperCase();
+            }
+            // If only one name, use first letter
+            return names[0].charAt(0).toUpperCase();
+        }
+
+        // Fallback to email first letter
+        return user.email.charAt(0).toUpperCase();
+    };
 
     // Determine the home route based on user authentication and role
     const getHomeRoute = () => {
@@ -70,14 +92,16 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
 
                 {user ? (
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        {/* Dashboard Button */}
-                        <Link to={isSuperAdmin() ? '/superadmin/dashboard' : isAdmin() ? '/admin/dashboard' : '/user/dashboard'}>
-                            <button className="btn btn-secondary">
-                                Dashboard
-                            </button>
-                        </Link>
+                        {/* Dashboard Button - Hidden when already on dashboard */}
+                        {!isOnDashboard && (
+                            <Link to={isSuperAdmin() ? '/superadmin/dashboard' : isAdmin() ? '/admin/dashboard' : '/user/dashboard'}>
+                                <button className="btn btn-secondary">
+                                    Dashboard
+                                </button>
+                            </Link>
+                        )}
 
-                        {/* User Avatar and Name */}
+                        {/* User Avatar with Initials Only */}
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -98,10 +122,10 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                                 fontWeight: '600',
                                 fontSize: '1rem'
                             }}>
-                                {user.name?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
+                                {getUserInitials()}
                             </div>
                             <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-primary)', margin: 0 }}>
-                                {user.name || 'User'}
+                                {getUserInitials()}
                             </p>
                         </div>
 
