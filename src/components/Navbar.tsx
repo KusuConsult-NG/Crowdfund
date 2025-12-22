@@ -98,14 +98,9 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                             }}>
                                 {user.name?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
                             </div>
-                            <div style={{ textAlign: 'left' }}>
-                                <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-primary)' }}>
-                                    {user.name || 'User'}
-                                </p>
-                                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-                                    {user.email}
-                                </p>
-                            </div>
+                            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-primary)', margin: 0 }}>
+                                {user.name || 'User'}
+                            </p>
                         </div>
 
                         {showDropdown && (
