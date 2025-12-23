@@ -91,7 +91,7 @@ const SuperAdminDashboard: React.FC = () => {
             <div style={{ display: 'flex', width: '100%', marginTop: '60px' }}>
                 <Sidebar menuItems={sidebarItems} userRole="Super Admin" />
 
-                <main style={{ flex: 1, padding: '1.25rem' }}>
+                <main style={{ flex: 1 }} className="p-responsive">
                     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                         <div style={{ padding: '1rem' }}>
                             <div>

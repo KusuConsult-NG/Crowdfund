@@ -8,8 +8,8 @@ const LandingPage: React.FC = () => {
             <nav style={{
                 borderBottom: '1px solid var(--color-border)',
                 backgroundColor: 'white',
-                padding: '1rem 2rem'
-            }}>
+                padding: '1rem'
+            }} className="px-responsive">
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--color-primary)' }}>
                         ChurchFlow
@@ -21,17 +21,17 @@ const LandingPage: React.FC = () => {
             </nav>
 
             {/* Hero Section */}
-            <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-                <div style={{ maxWidth: '900px', textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '1rem' }}>
+            <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="p-responsive">
+                <div style={{ maxWidth: '900px', textAlign: 'center', width: '100%' }}>
+                    <h1 style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '1rem' }}>
                         Empower Your Church Community
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--color-text-secondary)', marginBottom: '3rem', lineHeight: '1.8' }}>
+                    <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', color: 'var(--color-text-secondary)', marginBottom: 'clamp(2rem, 5vw, 3rem)', lineHeight: '1.8' }}>
                         Connect with meaningful projects, support your church's mission, and make a lasting impact in your community.
                     </p>
 
                     {/* CTA Cards */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '3rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'clamp(1rem, 3vw, 2rem)', marginTop: 'clamp(2rem, 5vw, 3rem)' }}>
                         {/* Donor Card */}
                         <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
                             <div style={{
@@ -101,7 +101,7 @@ const LandingPage: React.FC = () => {
             </main>
 
             {/* Footer */}
-            <footer style={{ borderTop: '1px solid var(--color-border)', padding: '1.5rem 2rem', textAlign: 'center' }}>
+            <footer style={{ borderTop: '1px solid var(--color-border)', padding: '1.5rem 1rem', textAlign: 'center' }}>
                 <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
                     © 2024 ChurchFlow. All rights reserved.
                 </p>

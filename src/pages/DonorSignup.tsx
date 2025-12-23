@@ -53,7 +53,7 @@ const DonorSignup: React.FC = () => {
             <Navbar />
 
             {/* Main Content */}
-            <main style={{ padding: '5rem 10rem 1.25rem', display: 'flex', justifyContent: 'center' }}>
+            <main style={{ paddingTop: '5rem', paddingBottom: '1.25rem', display: 'flex', justifyContent: 'center' }} className="px-responsive">
                 <div style={{ maxWidth: '512px', width: '100%', padding: '1.25rem 0' }}>
                     <h2 style={{
                         fontSize: '1.75rem',

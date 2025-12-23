@@ -45,7 +45,7 @@ const ForgotPassword: React.FC = () => {
         <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg-white)' }}>
             <Navbar />
 
-            <main style={{ paddingTop: '80px', padding: '5rem 10rem 1.25rem', display: 'flex', justifyContent: 'center' }}>
+            <main style={{ paddingTop: '5rem', paddingBottom: '1.25rem', display: 'flex', justifyContent: 'center' }} className="px-responsive">
                 <div style={{ maxWidth: '512px', width: '100%', padding: '1.25rem 0' }}>
                     <h2 style={{
                         fontSize: '1.75rem',

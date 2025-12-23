@@ -139,7 +139,7 @@ const AdminDashboard: React.FC = () => {
             <div style={{ display: 'flex', width: '100%', marginTop: '60px' }}>
                 <Sidebar menuItems={sidebarItems} userRole={isSuperAdmin() ? "SuperAdmin" : "Organizer"} />
 
-                <main style={{ flex: 1, padding: '1.25rem' }}>
+                <main style={{ flex: 1 }} className="p-responsive">
                     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                         <h2 style={{ fontSize: '1.875rem', fontWeight: '700', padding: '1rem', color: 'var(--color-text-primary)' }}>
                             Welcome back, {user?.name || (isSuperAdmin() ? 'Super Admin' : 'Organizer')}

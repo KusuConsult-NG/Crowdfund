@@ -57,17 +57,17 @@ const ProjectDiscovery: React.FC = () => {
             <Navbar />
 
             {/* Main Content */}
-            <main style={{ padding: '6rem 10rem 2rem' }}>
+            <main style={{ paddingTop: '5rem', paddingBottom: '2rem' }} className="px-responsive">
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', padding: '1rem 0' }}>
-                        <p style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--color-text-primary)', minWidth: '18rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', padding: '1rem 0', flexWrap: 'wrap' }}>
+                        <p style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: '700', color: 'var(--color-text-primary)' }}>
                             Discover Projects
                         </p>
                     </div>
 
                     {/* Search and Filter */}
-                    <div style={{ display: 'flex', gap: '1rem', padding: '1rem 0', flexWrap: 'wrap', alignItems: 'center' }}>
-                        <div style={{ flex: 1, minWidth: '250px' }}>
+                    <div style={{ display: 'flex', gap: '1rem', padding: '1rem 0', flexWrap: 'wrap', alignItems: 'stretch' }}>
+                        <div style={{ flex: '1 1 100%', minWidth: '250px', maxWidth: '100%' }} className="mobile-only">
                             <div style={{
                                 display: 'flex',
                                 width: '100%',
@@ -104,12 +104,49 @@ const ProjectDiscovery: React.FC = () => {
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)' }}>Category:</span>
+                        <div style={{ flex: 1, minWidth: '250px' }} className="desktop-only tablet-only">
+                            <div style={{
+                                display: 'flex',
+                                width: '100%',
+                                height: '3rem',
+                                borderRadius: 'var(--radius-lg)',
+                                border: '1px solid var(--color-border)',
+                                overflow: 'hidden'
+                            }}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '0 1rem',
+                                    backgroundColor: 'var(--color-bg-light)',
+                                    color: 'var(--color-text-secondary)'
+                                }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                                        <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Search projects by name..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    style={{
+                                        flex: 1,
+                                        border: 'none',
+                                        outline: 'none',
+                                        padding: '0 1rem',
+                                        fontSize: '1rem'
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: '1 1 auto', minWidth: '200px' }}>
+                            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)', whiteSpace: 'nowrap' }}>Category:</span>
                             <select
                                 value={categoryFilter}
                                 onChange={(e) => setCategoryFilter(e.target.value)}
-                                style={{ width: '180px', height: '3rem' }}
+                                style={{ flex: 1, minWidth: '150px', height: '3rem' }}
                             >
                                 <option value="all">All Categories</option>
                                 <option value="building">Building Projects</option>
@@ -121,13 +158,13 @@ const ProjectDiscovery: React.FC = () => {
                             </select>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)' }}>Sort By:</span>
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: '1 1 auto', minWidth: '200px' }}>
+                            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-secondary)', whiteSpace: 'nowrap' }}>Sort By:</span>
                             <select
                                 value={sortBy}
                                 // @ts-ignore
                                 onChange={(e) => setSortBy(e.target.value)}
-                                style={{ width: '180px', height: '3rem' }}
+                                style={{ flex: 1, minWidth: '150px', height: '3rem' }}
                             >
                                 <option value="newest">Newest First</option>
                                 <option value="goal_high">Highest Goal</option>
