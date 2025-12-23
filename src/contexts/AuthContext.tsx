@@ -43,13 +43,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             // If we have a user, get their extended profile data
             if (currentUser) {
-                const profile = await userService.getUserProfile(currentUser.$id);
-                setUserProfile(profile);
+                try {
+                    const profile = await userService.getUserProfile(currentUser.$id);
+                    setUserProfile(profile);
+                } catch (profileError: any) {
+                    // If profile doesn't exist (404), just continue without it
+                    // This can happen if user was created but profile doc wasn't
+                    console.warn('User profile not found:', profileError);
+                    setUserProfile(null);
+                }
             } else {
                 setUserProfile(null);
             }
         } catch (error) {
-            // If there's an error, clear the user state
+            // If there's an error getting the current user, clear the user state
+            console.error('Auth check failed:', error);
             setUser(null);
             setUserProfile(null);
         } finally {
