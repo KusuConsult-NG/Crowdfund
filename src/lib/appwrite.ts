@@ -1,15 +1,15 @@
 import { Client, Account, Databases, Storage } from "appwrite";
 
 const client = new Client()
-    .setEndpoint("https://fra.cloud.appwrite.io/v1")
-    .setProject("694493d0002c86a5e19e");
+    .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+    .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
 
 const account = new Account(client);
 const databases = new Databases(client);
 const storage = new Storage(client);
 
-export const DATABASE_ID = '69449bae002ad7ffd2a2';
-export const BUCKET_ID = 'projects_images'; // Replace with your actual bucket ID
+export const DATABASE_ID = import.meta.env.VITE_DATABASE_ID;
+export const BUCKET_ID = import.meta.env.VITE_BUCKET_ID;
 export const COLLECTIONS = {
     PROJECTS: 'projects',
     DONATIONS: 'donations',

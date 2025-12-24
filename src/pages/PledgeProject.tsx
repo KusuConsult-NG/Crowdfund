@@ -27,6 +27,25 @@ const PledgeProject: React.FC = () => {
         amount: parseFloat(pledgeAmount) * 100, // Paystack uses kobo/cents
         publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '',
         channels: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
+        metadata: {
+            custom_fields: [
+                {
+                    display_name: "Project",
+                    variable_name: "project_id",
+                    value: id || ''
+                },
+                {
+                    display_name: "Donor",
+                    variable_name: "user_id",
+                    value: user?.$id || ''
+                },
+                {
+                    display_name: "Project Name",
+                    variable_name: "project_name",
+                    value: project?.name || ''
+                }
+            ]
+        }
     };
 
     const initializePayment = usePaystackPayment(paystackConfig);
@@ -242,6 +261,41 @@ const PledgeProject: React.FC = () => {
                                         Make my contribution anonymous
                                     </span>
                                 </label>
+                            </div>
+
+                            {/* Supported Payment Methods */}
+                            <div style={{
+                                marginBottom: '1.5rem',
+                                padding: '1rem',
+                                backgroundColor: 'var(--color-bg-white)',
+                                borderRadius: 'var(--radius-md)',
+                                border: '1px solid var(--color-border)'
+                            }}>
+                                <p style={{
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    marginBottom: '0.75rem',
+                                    color: 'var(--color-text-primary)'
+                                }}>
+                                    We Accept:
+                                </p>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                    {['Card', 'Bank Transfer', 'USSD', 'Opay', 'Mobile Money', 'QR Code'].map((method) => (
+                                        <span
+                                            key={method}
+                                            style={{
+                                                padding: '0.375rem 0.75rem',
+                                                backgroundColor: 'var(--color-primary-light)',
+                                                color: 'var(--color-primary)',
+                                                borderRadius: 'var(--radius-sm)',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '600'
+                                            }}
+                                        >
+                                            {method}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Submit Button */}

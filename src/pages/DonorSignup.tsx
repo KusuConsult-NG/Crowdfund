@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
+import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator';
+import { validatePassword } from '../utils/passwordValidation';
 
 const DonorSignup: React.FC = () => {
     const navigate = useNavigate();
@@ -30,8 +32,10 @@ const DonorSignup: React.FC = () => {
             return;
         }
 
-        if (password.length < 8) {
-            setError('Password must be at least 8 characters long');
+        // Validate password against security requirements
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+            setError('Password does not meet all security requirements');
             return;
         }
 
@@ -163,6 +167,8 @@ const DonorSignup: React.FC = () => {
                                         )}
                                     </button>
                                 </div>
+                                {/* Password Strength Indicator */}
+                                <PasswordStrengthIndicator password={password} showRequirements={true} />
                             </label>
                         </div>
 

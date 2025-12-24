@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../services/authService';
 import Navbar from '../components/Navbar';
+import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator';
+import { validatePassword } from '../utils/passwordValidation';
 
 const SetNewPassword: React.FC = () => {
     const navigate = useNavigate();
@@ -42,9 +44,10 @@ const SetNewPassword: React.FC = () => {
             return;
         }
 
-        // Check password meets minimum length requirement
-        if (newPassword.length < 8) {
-            setError('Password must be at least 8 characters long');
+        // Validate password against security requirements
+        const passwordValidation = validatePassword(newPassword);
+        if (!passwordValidation.isValid) {
+            setError('Password does not meet all security requirements');
             return;
         }
 
@@ -125,6 +128,8 @@ const SetNewPassword: React.FC = () => {
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             disabled={loading || !userId || !secret}
                                         />
+                                        {/* Password Strength Indicator */}
+                                        <PasswordStrengthIndicator password={newPassword} showRequirements={true} />
                                     </label>
                                 </div>
 
@@ -148,7 +153,7 @@ const SetNewPassword: React.FC = () => {
                                     color: 'var(--color-text-secondary)',
                                     padding: '0.25rem 1rem 0.75rem'
                                 }}>
-                                    Password must contain at least 8 characters.
+                                    Choose a strong password with uppercase, lowercase, numbers, and special characters.
                                 </p>
 
                                 <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'center' }}>
