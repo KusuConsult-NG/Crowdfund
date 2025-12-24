@@ -75,7 +75,21 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                 backgroundColor: 'var(--color-bg-white)',
                 zIndex: 1000
             }}>
-                {/* Desktop Navigation - Now on LEFT */}
+                {/* Logo/Brand - LEFT SIDE */}
+                <Link to={getHomeRoute()} style={{ textDecoration: 'none' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ width: '1.5rem', height: '1.5rem' }}>
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="var(--color-primary)" />
+                            </svg>
+                        </div>
+                        <h2 style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--color-text-primary)' }}>
+                            ChurchFlow
+                        </h2>
+                    </div>
+                </Link>
+
+                {/* Desktop Navigation - RIGHT SIDE */}
                 <div className="desktop-only" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                     {canCreateProject && (
                         <Link to="/create-project">
@@ -152,7 +166,7 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                     )}
                 </div>
 
-                {/* Mobile Hamburger Button - Now on LEFT */}
+                {/* Mobile Hamburger Button - RIGHT SIDE */}
                 <button
                     className="mobile-only tablet-only"
                     onClick={toggleMobileMenu}
@@ -173,20 +187,6 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                         <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z" />
                     </svg>
                 </button>
-
-                {/* Logo/Brand - Now on RIGHT */}
-                <Link to={getHomeRoute()} style={{ textDecoration: 'none' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ width: '1.5rem', height: '1.5rem' }}>
-                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="var(--color-primary)" />
-                            </svg>
-                        </div>
-                        <h2 style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--color-text-primary)' }}>
-                            ChurchFlow
-                        </h2>
-                    </div>
-                </Link>
             </header>
 
             {/* Mobile Menu Overlay */}
