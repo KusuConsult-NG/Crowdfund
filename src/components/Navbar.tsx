@@ -75,43 +75,50 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                 backgroundColor: 'var(--color-bg-white)',
                 zIndex: 1000
             }}>
-                {/* Logo/Brand - LEFT SIDE */}
-                <Link to={getHomeRoute()} style={{ textDecoration: 'none' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ width: '1.5rem', height: '1.5rem' }}>
-                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="var(--color-primary)" />
-                            </svg>
+                {/* Left Side: Logo and Menu */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    {/* Logo */}
+                    <Link to={getHomeRoute()} style={{ textDecoration: 'none' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <div style={{ width: '1.5rem', height: '1.5rem' }}>
+                                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="var(--color-primary)" />
+                                </svg>
+                            </div>
+                            <h2 style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--color-text-primary)' }}>
+                                ChurchFlow
+                            </h2>
                         </div>
-                        <h2 style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--color-text-primary)' }}>
-                            ChurchFlow
-                        </h2>
-                    </div>
-                </Link>
+                    </Link>
 
-                {/* Desktop Navigation - RIGHT SIDE */}
-                <div className="desktop-only" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                    {canCreateProject && (
-                        <Link to="/create-project">
-                            <button className="btn btn-primary" style={{ minWidth: '160px' }}>
-                                + Create New Project
-                            </button>
-                        </Link>
-                    )}
+                    {/* Hamburger Menu Button - Desktop and Mobile */}
+                    <button
+                        onClick={toggleMobileMenu}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '2.5rem',
+                            height: '2.5rem',
+                            border: 'none',
+                            background: 'none',
+                            cursor: 'pointer',
+                            color: 'var(--color-text-primary)'
+                        }}
+                        aria-label="Toggle menu"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z" />
+                        </svg>
+                    </button>
+                </div>
 
+                {/* Right Side: Login/Signup or User Info */}
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {user ? (
-                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                            {/* Dashboard Button - Hidden when already on dashboard */}
-                            {!isOnDashboard && (
-                                <Link to={isSuperAdmin() ? '/superadmin/dashboard' : isAdmin() ? '/admin/dashboard' : '/user/dashboard'}>
-                                    <button className="btn btn-secondary">
-                                        Dashboard
-                                    </button>
-                                </Link>
-                            )}
-
-                            {/* User Avatar with Initials Only */}
-                            <div style={{
+                        <>
+                            {/* User Avatar - Desktop Only */}
+                            <div className="desktop-only" style={{
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.75rem',
@@ -138,10 +145,10 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                                 </p>
                             </div>
 
-                            {/* Logout Button */}
+                            {/* Logout Button - Desktop Only */}
                             <button
                                 onClick={handleLogout}
-                                className="btn btn-secondary"
+                                className="btn btn-secondary desktop-only"
                                 style={{
                                     color: 'var(--color-error)',
                                     borderColor: 'var(--color-error)'
@@ -149,44 +156,29 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                             >
                                 Logout
                             </button>
-                        </div>
+                        </>
                     ) : (
-                        <div style={{ display: 'flex', gap: '1rem' }}>
+                        <>
+                            {/* Login Button */}
                             <Link to="/login">
-                                <button className="btn btn-secondary">
+                                <button className="btn btn-secondary" style={{
+                                    background: 'transparent',
+                                    color: 'var(--color-text-primary)',
+                                    border: 'none',
+                                    boxShadow: 'none'
+                                }}>
                                     Login
                                 </button>
                             </Link>
+                            {/* Sign Up Button */}
                             <Link to="/signup">
                                 <button className="btn btn-primary">
                                     Sign Up
                                 </button>
                             </Link>
-                        </div>
+                        </>
                     )}
                 </div>
-
-                {/* Mobile Hamburger Button - RIGHT SIDE */}
-                <button
-                    className="mobile-only tablet-only"
-                    onClick={toggleMobileMenu}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '2.5rem',
-                        height: '2.5rem',
-                        border: 'none',
-                        background: 'none',
-                        cursor: 'pointer',
-                        color: 'var(--color-text-primary)'
-                    }}
-                    aria-label="Toggle menu"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z" />
-                    </svg>
-                </button>
             </header>
 
             {/* Mobile Menu Overlay */}
@@ -260,6 +252,7 @@ const Navbar: React.FC<NavbarProps> = ({ showCreateButton = true }) => {
                                 </div>
                             </div>
 
+                            {/* Navigation Links */}
                             {canCreateProject && (
                                 <Link to="/create-project" onClick={toggleMobileMenu}>
                                     <button className="btn btn-primary" style={{ width: '100%' }}>
